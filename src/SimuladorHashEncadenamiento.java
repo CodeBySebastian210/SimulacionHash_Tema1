@@ -9,6 +9,7 @@
  * @author Lenovo
  */
 public class SimuladorHashEncadenamiento extends javax.swing.JFrame {
+    private java.util.List<Integer>[] tabla;
 
     /**
      * Creates new form SimuladorHashEncadenamiento
@@ -51,9 +52,19 @@ public class SimuladorHashEncadenamiento extends javax.swing.JFrame {
         txtClave.setEnabled(false);
 
         btnCrear.setText("Crear tabla");
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
 
         btnInsertar.setText("Insertar");
         btnInsertar.setEnabled(false);
+        btnInsertar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertarActionPerformed(evt);
+            }
+        });
 
         btnBuscar.setText("Buscar");
         btnBuscar.setEnabled(false);
@@ -142,6 +153,65 @@ public class SimuladorHashEncadenamiento extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+        // TODO add your handling code here:
+        try {
+            int n = Integer.parseInt(txtTamano.getText().trim());
+            if (n <= 0) throw new NumberFormatException();
+
+            tabla = new java.util.ArrayList[n];
+            for (int i = 0; i < n; i++) {
+                tabla[i] = new java.util.ArrayList<>();
+            }
+
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+            modelo.setRowCount(0);
+            for (int i = 0; i < n; i++) {
+                modelo.addRow(new Object[]{i, "[]"});
+            }
+
+            areaLog.append("Tabla hash creada con tamaño " + n + "\n");
+
+            txtClave.setEnabled(true);
+            btnInsertar.setEnabled(true);
+            btnBuscar.setEnabled(true);
+            btnEliminar.setEnabled(true);
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                    "El tamaño N debe ser un número entero positivo", 
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnCrearActionPerformed
+
+    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
+        // TODO add your handling code here:
+        try {
+            if (tabla == null) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int clave = Integer.parseInt(txtClave.getText().trim());
+            int n = tabla.length;
+            int pos = clave % n; 
+
+            tabla[pos].add(clave);
+
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+            modelo.setValueAt(tabla[pos].toString(), pos, 1);
+
+            areaLog.append("Insertado " + clave + " en posición " + pos + "\n");
+
+            txtClave.setText("");
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Ingrese una clave numérica válida", 
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnInsertarActionPerformed
 
     /**
      * @param args the command line arguments

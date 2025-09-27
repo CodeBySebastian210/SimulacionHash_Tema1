@@ -68,11 +68,26 @@ public class SimuladorHashEncadenamiento extends javax.swing.JFrame {
 
         btnBuscar.setText("Buscar");
         btnBuscar.setEnabled(false);
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
         btnEliminar.setEnabled(false);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         tablaHash.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -212,6 +227,111 @@ public class SimuladorHashEncadenamiento extends javax.swing.JFrame {
                     "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnInsertarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        try {
+            if (tabla == null) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int clave = Integer.parseInt(txtClave.getText().trim());
+            int n = tabla.length;
+            int pos = clave % n;
+
+            tablaHash.clearSelection();
+
+            boolean encontrado = false;
+            int comparaciones = 1; 
+
+            for (int val : tabla[pos]) {
+                comparaciones++;
+                if (val == clave) {
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            tablaHash.setRowSelectionInterval(pos, pos);
+
+            if (encontrado) {
+                areaLog.append("✔ Clave " + clave + " encontrada en posición " + pos + "\n");
+                javax.swing.JOptionPane.showMessageDialog(this, "Clave " + clave + " encontrada en posición " + pos, "Resultado de búsqueda", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                areaLog.append("❌ Clave " + clave + " NO encontrada en posición " + pos + "\n");
+                javax.swing.JOptionPane.showMessageDialog(this, "Clave " + clave + " NO encontrada en posición " + pos, "Resultado de búsqueda", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+
+            areaLog.append("Comparaciones en búsqueda: " + comparaciones + "\n\n");
+            txtClave.setText("");
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Ingrese una clave numérica válida", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        try {
+            if (tabla == null) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int clave = Integer.parseInt(txtClave.getText().trim());
+            int n = tabla.length;
+            int pos = clave % n;
+
+            boolean eliminado = false;
+            int comparaciones = 1; 
+
+            java.util.Iterator<Integer> it = tabla[pos].iterator();
+            while (it.hasNext()) {
+                comparaciones++;
+                if (it.next() == clave) {
+                    it.remove();
+                    eliminado = true;
+                    break;
+                }
+            }
+
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+            modelo.setValueAt(tabla[pos].toString(), pos, 1);
+
+            if (eliminado) {
+                areaLog.append("✔ Clave " + clave + " eliminada de posición " + pos + "\n");
+                javax.swing.JOptionPane.showMessageDialog(this, "Clave " + clave + " eliminada de posición " + pos, "Eliminar", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                areaLog.append("❌ Clave " + clave + " NO encontrada en posición " + pos + "\n");
+                javax.swing.JOptionPane.showMessageDialog(this, "Clave " + clave + " NO encontrada en posición " + pos, "Eliminar", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+
+            areaLog.append("Comparaciones en eliminación: " + comparaciones + "\n\n");
+            txtClave.setText("");
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Ingrese una clave numérica válida", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        txtTamano.setText("7");
+        txtClave.setText("");
+        areaLog.setText("");
+        tabla = null;
+
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+        modelo.setRowCount(0);
+
+        btnInsertar.setEnabled(false);
+        btnBuscar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        txtClave.setEnabled(false);
+
+        areaLog.append("Datos limpiados.\n");
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
     /**
      * @param args the command line arguments
